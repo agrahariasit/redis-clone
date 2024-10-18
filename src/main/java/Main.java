@@ -17,8 +17,13 @@ public class Main {
           // ensures that we don't run into 'Address already in use' errors
           serverSocket.setReuseAddress(true);
           // Wait for connection from client.
-          clientSocket = serverSocket.accept();
-          processCommand(clientSocket);
+          while(true) {
+              clientSocket = serverSocket.accept();
+              ClientRequestHandler handler = new ClientRequestHandler(clientSocket);
+              Thread t = new Thread(handler);
+              t.start();
+          }
+
         } catch (IOException e) {
           System.out.println("IOException: " + e.getMessage());
         } finally {
@@ -30,18 +35,5 @@ public class Main {
             System.out.println("IOException: " + e.getMessage());
           }
         }
-  }
-  public static void processCommand(Socket clientSocket) throws IOException {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-      String val = reader.readLine();
-      while (val != null) {
-          System.out.println("command received from client: "+val);
-          if(val.contains("PING")) {
-              writer.write("+PONG\r\n");
-              writer.flush();
-          }
-          val = reader.readLine();
-      }
   }
 }
