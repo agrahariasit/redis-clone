@@ -16,12 +16,12 @@ public class Main {
           // Since the tester restarts your program quite often, setting SO_REUSEADDR
           // ensures that we don't run into 'Address already in use' errors
           serverSocket.setReuseAddress(true);
+          ClientHandlerEventLoop eventLoop = new ClientHandlerEventLoop();
           // Wait for connection from client.
           while(true) {
               clientSocket = serverSocket.accept();
-              ClientRequestHandler handler = new ClientRequestHandler(clientSocket);
-              Thread t = new Thread(handler);
-              t.start();
+              ClientRequest requestTask = new ClientRequest(clientSocket);
+              eventLoop.submit(requestTask);
           }
 
         } catch (IOException e) {

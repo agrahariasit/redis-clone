@@ -1,10 +1,15 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ClientRequestHandler implements Runnable{
+public class ClientRequest implements Runnable{
     Socket clientSocket;
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    ClientRequestHandler(Socket clientSocket) {
+
+
+    ClientRequest(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
     @Override
